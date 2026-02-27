@@ -72,17 +72,9 @@
             background-color: #333;
         }
 
-        .good {
-            color: #66ff99;
-        }
-
-        .warn {
-            color: #ffd24d;
-        }
-
-        .bad {
-            color: #ff4d4d;
-        }
+        .good { color: #66ff99; }
+        .warn { color: #ffd24d; }
+        .bad  { color: #ff4d4d; }
 
         footer {
             text-align: center;
@@ -103,95 +95,98 @@
 </head>
 
 <body>
-    <div class="container">
+<div class="container">
 
-        <h1>PCB Trace Width & Voltage Drop Calculator</h1>
+<h1>PCB Trace Width & Voltage Drop Calculator</h1>
 
-        <form method="POST">
+<form method="POST">
 
-            <label>Current (A)</label>
-            <input type="number" step="any" name="current" required>
+    <label>Current (A)</label>
+    <input type="number" step="any" name="current"
+           value="{{ request.form.current or '' }}" required>
 
-            <label>Temp Rise (°C)</label>
-            <input type="number" step="any" name="temp_rise" required>
+    <label>Temp Rise (°C)</label>
+    <input type="number" step="any" name="temp_rise"
+           value="{{ request.form.temp_rise or '' }}" required>
 
-            <label>Length (mm)</label>
-            <input type="number" step="any" name="length_mm" required>
+    <label>Length (mm)</label>
+    <input type="number" step="any" name="length_mm"
+           value="{{ request.form.length_mm or '' }}" required>
 
-            <label>Supply Voltage (V)</label>
-            <input type="number" step="any" name="supply_voltage" required>
+    <label>Supply Voltage (V)</label>
+    <input type="number" step="any" name="supply_voltage"
+           value="{{ request.form.supply_voltage or '' }}" required>
 
-            <label>Copper Weight</label>
-            <select name="copper_weight">
-                <option value="0.5">0.5 oz</option>
-                <option value="1">1 oz</option>
-                <option value="2">2 oz</option>
-                <option value="3">3 oz</option>
-            </select>
-            <label>Layer Used for Resistance</label>
-            <select name="resistance_layer">
-                <option value="external">External</option>
-                <option value="internal">Internal</option>
-            </select>
+    <label>Copper Weight</label>
+    <select name="copper_weight">
+        <option value="0.5" {% if request.form.copper_weight == "0.5" %}selected{% endif %}>0.5 oz</option>
+        <option value="1" {% if request.form.copper_weight == "1" %}selected{% endif %}>1 oz</option>
+        <option value="2" {% if request.form.copper_weight == "2" %}selected{% endif %}>2 oz</option>
+        <option value="3" {% if request.form.copper_weight == "3" %}selected{% endif %}>3 oz</option>
+    </select>
 
-            <button type="submit">Calculate</button>
+    <label>Layer Used for Resistance</label>
+    <select name="resistance_layer">
+        <option value="external" {% if request.form.resistance_layer == "external" %}selected{% endif %}>External</option>
+        <option value="internal" {% if request.form.resistance_layer == "internal" %}selected{% endif %}>Internal</option>
+    </select>
 
-        </form>
+    <button type="submit">Calculate</button>
 
-        {% if result %}
+</form>
 
-        <h2>Results</h2>
+{% if result %}
 
-        <table>
-            <tr>
-                <th>Layer</th>
-                <th>Width (mil)</th>
-                <th>Width (mm)</th>
-            </tr>
-            <tr>
-                <td>External</td>
-                <td>{{ result.external_mil }}</td>
-                <td>{{ result.external_mm }}</td>
-            </tr>
-            <tr>
-                <td>Internal</td>
-                <td>{{ result.internal_mil }}</td>
-                <td>{{ result.internal_mm }}</td>
-            </tr>
-        </table>
+<h2>Results</h2>
 
-        <p><strong>Resistance:</strong> {{ result.resistance }} Ω</p>
-        <p><strong>Resistance Calculated Using:</strong> {{ result.layer_used }}</p>
+<table>
+    <tr>
+        <th>Layer</th>
+        <th>Width (mil)</th>
+        <th>Width (mm)</th>
+    </tr>
+    <tr>
+        <td>External</td>
+        <td>{{ result.external_mil }}</td>
+        <td>{{ result.external_mm }}</td>
+    </tr>
+    <tr>
+        <td>Internal</td>
+        <td>{{ result.internal_mil }}</td>
+        <td>{{ result.internal_mm }}</td>
+    </tr>
+</table>
 
-        <p>
-            <strong>Voltage Drop:</strong>
-            {{ result.voltage_drop }} V
-            ({{ result.voltage_drop_percent }} %)
-        </p>
+<p><strong>Resistance:</strong> {{ result.resistance }} Ω</p>
 
-        {% if result.voltage_drop_percent > 10 %}
-            <p class="bad">
-                ⚠ Voltage drop exceeds 10%. Increase trace width.
-            </p>
-        {% elif result.voltage_drop_percent > 5 %}
-            <p class="warn">
-                ⚠ Voltage drop exceeds 5%. May impact regulation.
-            </p>
-        {% else %}
-            <p class="good">
-                ✓ Voltage drop within acceptable range.
-            </p>
-        {% endif %}
+<p>
+<strong>Resistance Calculated Using:</strong>
+{{ result.layer_used }}
+</p>
 
-        {% endif %}
+<p>
+<strong>Voltage Drop:</strong>
+{{ result.voltage_drop }} V
+({{ result.voltage_drop_percent }} %)
+</p>
 
-        <footer>
-            Built by Steven Woytasik • IPC-2221 Trace Width Calculator •
-            <a href="https://github.com/srwoytasik-alt/pcb-trace-calculator" target="_blank">
-                View Source on GitHub
-            </a>
-        </footer>
+{% if result.voltage_drop_percent > 10 %}
+    <p class="bad">⚠ Voltage drop exceeds 10%. Increase trace width.</p>
+{% elif result.voltage_drop_percent > 5 %}
+    <p class="warn">⚠ Voltage drop exceeds 5%. May impact regulation.</p>
+{% else %}
+    <p class="good">✓ Voltage drop within acceptable range.</p>
+{% endif %}
 
-    </div>
+{% endif %}
+
+<footer>
+Built by Steven Woytasik • IPC-2221 Trace Width Calculator •
+<a href="https://github.com/srwoytasik-alt/pcb-trace-calculator" target="_blank">
+View Source on GitHub
+</a>
+</footer>
+
+</div>
 </body>
 </html>

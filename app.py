@@ -9,7 +9,7 @@ from calculator import (
 app = Flask(__name__)
 
 
-# Health check endpoint for Render
+# Health endpoint for Render
 @app.route("/health")
 def health():
     return "OK", 200
@@ -21,9 +21,6 @@ def index():
 
     if request.method == "POST":
         try:
-            # -----------------------------
-            # Get form inputs safely
-            # -----------------------------
             current = float(request.form.get("current") or 0)
             temp_rise = float(request.form.get("temp_rise") or 0)
             length_mm = float(request.form.get("length_mm") or 0)
@@ -31,12 +28,9 @@ def index():
             copper_weight = float(request.form.get("copper_weight") or 1)
             resistance_layer = request.form.get("resistance_layer", "external")
 
-            # Convert mm to meters
             length = length_mm / 1000
 
-            # -----------------------------
-            # Calculate trace widths FIRST
-            # -----------------------------
+            # Calculate widths
             external_width = calculate_trace_width(
                 current, temp_rise, copper_weight, "external"
             )
@@ -45,9 +39,7 @@ def index():
                 current, temp_rise, copper_weight, "internal"
             )
 
-            # -----------------------------
-            # Choose layer for resistance
-            # -----------------------------
+            # Select layer for resistance
             if resistance_layer == "internal":
                 width_m = internal_width[0] * 0.0000254
                 layer_used_label = "Internal Layer"
@@ -57,9 +49,6 @@ def index():
 
             thickness_m = COPPER_WEIGHTS[copper_weight]
 
-            # -----------------------------
-            # Resistance + voltage drop
-            # -----------------------------
             resistance = calculate_resistance(length, width_m, thickness_m)
             v_drop = calculate_voltage_drop(current, resistance)
 
@@ -68,9 +57,6 @@ def index():
             else:
                 v_drop_percent = 0
 
-            # -----------------------------
-            # Format results
-            # -----------------------------
             result = {
                 "external_mil": round(external_width[0], 2),
                 "external_mm": round(external_width[1], 3),
