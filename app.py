@@ -18,6 +18,7 @@ def index():
         temp_rise = float(request.form["temp_rise"])
         length_mm = float(request.form["length_mm"])
         length = length_mm / 1000  # convert mm to meters
+        supply_voltage = float(request.form["supply_voltage"])
         copper_weight = float(request.form["copper_weight"])
 
         external_width = calculate_trace_width(
@@ -33,6 +34,8 @@ def index():
 
         resistance = calculate_resistance(length, width_m, thickness_m)
         v_drop = calculate_voltage_drop(current, resistance)
+        
+        v_drop_percent = (v_drop / supply_voltage) * 100
 
         result = {
             "external_mil": round(external_width[0], 2),
@@ -41,6 +44,7 @@ def index():
             "internal_mm": round(internal_width[1], 3),
             "resistance": round(resistance, 4),
             "voltage_drop": round(v_drop, 4),
+            "voltage_drop_percent": round(v_drop_percent, 2),
         }
 
     return render_template("index.html", result=result)
