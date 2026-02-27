@@ -25,6 +25,13 @@ def index():
             copper_weight = float(request.form.get("copper_weight") or 1)
             resistance_layer = request.form.get("resistance_layer", "external")
 
+            if resistance_layer == "internal":
+                width_m = internal_width[0] * 0.0000254
+                layer_used_label = "Internal Layer"
+            else:
+                width_m = external_width[0] * 0.0000254
+                layer_used_label = "External Layer"
+
             length = length_mm / 1000
 
             external_width = calculate_trace_width(
@@ -57,6 +64,7 @@ def index():
                 "resistance": round(resistance, 4),
                 "voltage_drop": round(v_drop, 4),
                 "voltage_drop_percent": round(v_drop_percent, 2),
+                "layer_used": layer_used_label,
             }
 
         except Exception as e:
