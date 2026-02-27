@@ -9,7 +9,6 @@ from calculator import (
 app = Flask(__name__)
 
 
-# Health endpoint for Render
 @app.route("/health")
 def health():
     return "OK", 200
@@ -19,18 +18,36 @@ def health():
 def index():
     result = None
 
+    # Default empty form values
+    form_values = {
+        "current": "",
+        "temp_rise": "",
+        "length_mm": "",
+        "supply_voltage": "",
+        "copper_weight": "0.5",
+        "resistance_layer": "external",
+    }
+
     if request.method == "POST":
         try:
-            current = float(request.form.get("current") or 0)
-            temp_rise = float(request.form.get("temp_rise") or 0)
-            length_mm = float(request.form.get("length_mm") or 0)
-            supply_voltage = float(request.form.get("supply_voltage") or 0)
-            copper_weight = float(request.form.get("copper_weight") or 1)
-            resistance_layer = request.form.get("resistance_layer", "external")
+            # Pull raw form values first
+            form_values["current"] = request.form.get("current", "")
+            form_values["temp_rise"] = request.form.get("temp_rise", "")
+            form_values["length_mm"] = request.form.get("length_mm", "")
+            form_values["supply_voltage"] = request.form.get("supply_voltage", "")
+            form_values["copper_weight"] = request.form.get("copper_weight", "0.5")
+            form_values["resistance_layer"] = request.form.get("resistance_layer", "external")
+
+            # Convert to numbers
+            current = float(form_values["current"] or 0)
+            temp_rise = float(form_values["temp_rise"] or 0)
+            length_mm = float(form_values["length_mm"] or 0)
+            supply_voltage = float(form_values["supply_voltage"] or 0)
+            copper_weight = float(form_values["copper_weight"])
+            resistance_layer = form_values["resistance_layer"]
 
             length = length_mm / 1000
 
-            # Calculate widths
             external_width = calculate_trace_width(
                 current, temp_rise, copper_weight, "external"
             )
@@ -39,7 +56,6 @@ def index():
                 current, temp_rise, copper_weight, "internal"
             )
 
-            # Select layer for resistance
             if resistance_layer == "internal":
                 width_m = internal_width[0] * 0.0000254
                 layer_used_label = "Internal Layer"
@@ -52,10 +68,7 @@ def index():
             resistance = calculate_resistance(length, width_m, thickness_m)
             v_drop = calculate_voltage_drop(current, resistance)
 
-            if supply_voltage > 0:
-                v_drop_percent = (v_drop / supply_voltage) * 100
-            else:
-                v_drop_percent = 0
+            v_drop_percent = (v_drop / supply_voltage) * 100 if supply_voltage > 0 else 0
 
             result = {
                 "external_mil": round(external_width[0], 2),
@@ -71,7 +84,11 @@ def index():
         except Exception as e:
             return f"Calculation Error: {e}"
 
-    return render_template("index.html", result=result)
+    return render_template(
+        "index.html",
+        result=result,
+        form_data=form_values
+    )
 
 
 if __name__ == "__main__":
