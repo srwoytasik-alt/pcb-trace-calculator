@@ -34,6 +34,7 @@ def index():
 
             length = length_mm / 1000
 
+            # Calculate widths FIRST
             external_width = calculate_trace_width(
                 current, temp_rise, copper_weight, "external"
             )
@@ -42,10 +43,17 @@ def index():
                 current, temp_rise, copper_weight, "internal"
             )
 
+            # Decide which layer is used for resistance
+            resistance_layer = request.form.get("resistance_layer", "external")
+
             if resistance_layer == "internal":
                 width_m = internal_width[0] * 0.0000254
+                layer_used_label = "Internal Layer"
             else:
                 width_m = external_width[0] * 0.0000254
+                layer_used_label = "External Layer"
+
+            # Continue with resistance math
             thickness_m = COPPER_WEIGHTS[copper_weight]
 
             resistance = calculate_resistance(length, width_m, thickness_m)
