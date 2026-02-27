@@ -26,6 +26,10 @@
             color: #ffffff;
         }
 
+        label {
+            font-size: 14px;
+        }
+
         input, select {
             width: 100%;
             padding: 8px;
@@ -104,19 +108,20 @@
         <h1>PCB Trace Width & Voltage Drop Calculator</h1>
 
         <form method="POST">
-            Current (A):
+
+            <label>Current (A)</label>
             <input type="number" step="any" name="current" required>
 
-            Temp Rise (°C):
+            <label>Temp Rise (°C)</label>
             <input type="number" step="any" name="temp_rise" required>
 
-            Length (mm):
+            <label>Length (mm)</label>
             <input type="number" step="any" name="length_mm" required>
 
-            Supply Voltage (V):
+            <label>Supply Voltage (V)</label>
             <input type="number" step="any" name="supply_voltage" required>
 
-            Copper Weight:
+            <label>Copper Weight</label>
             <select name="copper_weight">
                 <option value="0.5">0.5 oz</option>
                 <option value="1">1 oz</option>
@@ -125,9 +130,11 @@
             </select>
 
             <button type="submit">Calculate</button>
+
         </form>
 
         {% if result %}
+
         <h2>Results</h2>
 
         <table>
