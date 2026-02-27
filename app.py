@@ -88,7 +88,7 @@ def index():
         "index.html",
         result=result,
         form_data=form_values
-    )
+)
 
 
 if __name__ == "__main__":
