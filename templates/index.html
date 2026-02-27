@@ -23,12 +23,31 @@
     </form>
 
     {% if result %}
-        <h2>Results</h2>
+<h2>Results</h2>
 
-        <p>External Width: {{ result.external[0] }} mil ({{ result.external[1] }} mm)</p>
-        <p>Internal Width: {{ result.internal[0] }} mil ({{ result.internal[1] }} mm)</p>
-        <p>Resistance: {{ result.resistance }} Ω</p>
-        <p>Voltage Drop: {{ result.voltage_drop }} V</p>
-    {% endif %}
+<table border="1" cellpadding="8">
+    <tr>
+        <th>Layer</th>
+        <th>Width (mil)</th>
+        <th>Width (mm)</th>
+    </tr>
+    <tr>
+        <td>External</td>
+        <td>{{ "%.2f"|format(result.external[0]) }}</td>
+        <td>{{ "%.3f"|format(result.external[1]) }}</td>
+    </tr>
+    <tr>
+        <td>Internal</td>
+        <td>{{ "%.2f"|format(result.internal[0]) }}</td>
+        <td>{{ "%.3f"|format(result.internal[1]) }}</td>
+    </tr>
+</table>
+
+<br>
+
+<p><strong>Resistance:</strong> {{ "%.4f"|format(result.resistance) }} Ω</p>
+<p><strong>Voltage Drop:</strong> {{ "%.4f"|format(result.voltage_drop) }} V</p>
+
+{% endif %}
 </body>
 </html>
