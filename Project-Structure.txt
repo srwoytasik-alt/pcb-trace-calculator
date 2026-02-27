@@ -1,0 +1,11 @@
+pcb-trace-calculator/
+│
+├── app.py
+├── calculator.py
+├── templates/
+│   └── index.html
+├── static/
+│   └── styles.css
+├── requirements.txt
+├── Procfile
+└── README.md

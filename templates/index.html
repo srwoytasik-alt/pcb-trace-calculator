@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PCB Trace Calculator</title>
+</head>
+<body>
+    <h1>PCB Trace Width & Voltage Drop Calculator</h1>
+
+    <form method="POST">
+        Current (A): <input type="number" step="any" name="current" required><br>
+        Temp Rise (°C): <input type="number" step="any" name="temp_rise" required><br>
+        Length (m): <input type="number" step="any" name="length" required><br>
+
+        Copper Weight:
+        <select name="copper_weight">
+            <option value="0.5">0.5 oz</option>
+            <option value="1">1 oz</option>
+            <option value="2">2 oz</option>
+            <option value="3">3 oz</option>
+        </select><br>
+
+        <button type="submit">Calculate</button>
+    </form>
+
+    {% if result %}
+        <h2>Results</h2>
+
+        <p>External Width: {{ result.external[0] }} mil ({{ result.external[1] }} mm)</p>
+        <p>Internal Width: {{ result.internal[0] }} mil ({{ result.internal[1] }} mm)</p>
+        <p>Resistance: {{ result.resistance }} Ω</p>
+        <p>Voltage Drop: {{ result.voltage_drop }} V</p>
+    {% endif %}
+</body>
+</html>
