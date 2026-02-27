@@ -34,10 +34,12 @@ def index():
         v_drop = calculate_voltage_drop(current, resistance)
 
         result = {
-            "external": external_width,
-            "internal": internal_width,
-            "resistance": resistance,
-            "voltage_drop": v_drop,
+            "external_mil": round(external_width[0], 2),
+            "external_mm": round(external_width[1], 3),
+            "internal_mil": round(internal_width[0], 2),
+            "internal_mm": round(internal_width[1], 3),
+            "resistance": round(resistance, 4),
+            "voltage_drop": round(v_drop, 4),
         }
 
     return render_template("index.html", result=result)

@@ -33,20 +33,20 @@
     </tr>
     <tr>
         <td>External</td>
-        <td>{{ "%.2f"|format(result.external[0]) }}</td>
-        <td>{{ "%.3f"|format(result.external[1]) }}</td>
+        <td>{{ result.external_mil }}</td>
+        <td>{{ result.external_mm }}</td>
     </tr>
     <tr>
         <td>Internal</td>
-        <td>{{ "%.2f"|format(result.internal[0]) }}</td>
-        <td>{{ "%.3f"|format(result.internal[1]) }}</td>
+        <td>{{ result.internal_mil }}</td>
+        <td>{{ result.internal_mm }}</td>
     </tr>
 </table>
 
 <br>
 
-<p><strong>Resistance:</strong> {{ "%.4f"|format(result.resistance) }} Ω</p>
-<p><strong>Voltage Drop:</strong> {{ "%.4f"|format(result.voltage_drop) }} V</p>
+<p><strong>Resistance:</strong> {{ result.resistance }} Ω</p>
+<p><strong>Voltage Drop:</strong> {{ result.voltage_drop }} V</p>
 
 {% endif %}
 </body>
