@@ -23,6 +23,7 @@ def index():
             length_mm = float(request.form.get("length_mm") or 0)
             supply_voltage = float(request.form.get("supply_voltage") or 0)
             copper_weight = float(request.form.get("copper_weight") or 1)
+            resistance_layer = request.form.get("resistance_layer", "external")
 
             length = length_mm / 1000
 
@@ -34,7 +35,10 @@ def index():
                 current, temp_rise, copper_weight, "internal"
             )
 
-            width_m = external_width[0] * 0.0000254
+            if resistance_layer == "internal":
+                width_m = internal_width[0] * 0.0000254
+            else:
+                width_m = external_width[0] * 0.0000254
             thickness_m = COPPER_WEIGHTS[copper_weight]
 
             resistance = calculate_resistance(length, width_m, thickness_m)
