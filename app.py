@@ -16,7 +16,8 @@ def index():
     if request.method == "POST":
         current = float(request.form["current"])
         temp_rise = float(request.form["temp_rise"])
-        length = float(request.form["length"])
+        length_mm = float(request.form["length_mm"])
+        length = length_mm / 1000  # convert mm to meters
         copper_weight = float(request.form["copper_weight"])
 
         external_width = calculate_trace_width(
