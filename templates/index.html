@@ -68,6 +68,18 @@
             background-color: #333;
         }
 
+        .good {
+            color: #66ff99;
+        }
+
+        .warn {
+            color: #ffd24d;
+        }
+
+        .bad {
+            color: #ff4d4d;
+        }
+
         footer {
             text-align: center;
             margin-top: 30px;
@@ -85,63 +97,88 @@
         }
     </style>
 </head>
-<hr>
 
-<footer style="margin-top:20px; font-size:14px; color:#555;">
-    Built by Steven Woytasik • IPC-2221 Trace Width Calculator • 
-    <a href="https://github.com/srwoytasik-alt/pcb-trace-calculator" target="_blank">
-        View Source on GitHub
-    </a>
-</footer>
-</div>
 <body>
     <div class="container">
-    <h1>PCB Trace Width & Voltage Drop Calculator</h1>
 
-    <form method="POST">
-        Current (A): <input type="number" step="any" name="current" required><br>
-        Temp Rise (°C): <input type="number" step="any" name="temp_rise" required><br>
-        Length (mm): <input type="number" step="any" name="length_mm" required><br>
-        Supply Voltage (V): 
-        <input type="number" step="any" name="supply_voltage" required>
+        <h1>PCB Trace Width & Voltage Drop Calculator</h1>
 
-        Copper Weight:
-        <select name="copper_weight">
-            <option value="0.5">0.5 oz</option>
-            <option value="1">1 oz</option>
-            <option value="2">2 oz</option>
-            <option value="3">3 oz</option>
-        </select><br>
+        <form method="POST">
+            Current (A):
+            <input type="number" step="any" name="current" required>
 
-        <button type="submit">Calculate</button>
-    </form>
+            Temp Rise (°C):
+            <input type="number" step="any" name="temp_rise" required>
 
-    {% if result %}
-<h2>Results</h2>
+            Length (mm):
+            <input type="number" step="any" name="length_mm" required>
 
-<table border="1" cellpadding="8">
-    <tr>
-        <th>Layer</th>
-        <th>Width (mil)</th>
-        <th>Width (mm)</th>
-    </tr>
-    <tr>
-        <td>External</td>
-        <td>{{ result.external_mil }}</td>
-        <td>{{ result.external_mm }}</td>
-    </tr>
-    <tr>
-        <td>Internal</td>
-        <td>{{ result.internal_mil }}</td>
-        <td>{{ result.internal_mm }}</td>
-    </tr>
-</table>
+            Supply Voltage (V):
+            <input type="number" step="any" name="supply_voltage" required>
 
-<br>
+            Copper Weight:
+            <select name="copper_weight">
+                <option value="0.5">0.5 oz</option>
+                <option value="1">1 oz</option>
+                <option value="2">2 oz</option>
+                <option value="3">3 oz</option>
+            </select>
 
-<p><strong>Resistance:</strong> {{ result.resistance }} Ω</p>
-<p><strong>Voltage Drop:</strong> {{ result.voltage_drop }} V</p>
+            <button type="submit">Calculate</button>
+        </form>
 
-{% endif %}
+        {% if result %}
+        <h2>Results</h2>
+
+        <table>
+            <tr>
+                <th>Layer</th>
+                <th>Width (mil)</th>
+                <th>Width (mm)</th>
+            </tr>
+            <tr>
+                <td>External</td>
+                <td>{{ result.external_mil }}</td>
+                <td>{{ result.external_mm }}</td>
+            </tr>
+            <tr>
+                <td>Internal</td>
+                <td>{{ result.internal_mil }}</td>
+                <td>{{ result.internal_mm }}</td>
+            </tr>
+        </table>
+
+        <p><strong>Resistance:</strong> {{ result.resistance }} Ω</p>
+
+        <p>
+            <strong>Voltage Drop:</strong>
+            {{ result.voltage_drop }} V
+            ({{ result.voltage_drop_percent }} %)
+        </p>
+
+        {% if result.voltage_drop_percent > 10 %}
+            <p class="bad">
+                ⚠ Voltage drop exceeds 10%. Increase trace width.
+            </p>
+        {% elif result.voltage_drop_percent > 5 %}
+            <p class="warn">
+                ⚠ Voltage drop exceeds 5%. May impact regulation.
+            </p>
+        {% else %}
+            <p class="good">
+                ✓ Voltage drop within acceptable range.
+            </p>
+        {% endif %}
+
+        {% endif %}
+
+        <footer>
+            Built by Steven Woytasik • IPC-2221 Trace Width Calculator •
+            <a href="https://github.com/srwoytasik-alt/pcb-trace-calculator" target="_blank">
+                View Source on GitHub
+            </a>
+        </footer>
+
+    </div>
 </body>
 </html>
