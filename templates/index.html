@@ -12,7 +12,7 @@
         }
 
         .container {
-            max-width: 600px;
+            max-width: 650px;
             margin: auto;
             background-color: #2b2b2b;
             padding: 30px;
@@ -28,13 +28,15 @@
 
         label {
             font-size: 14px;
+            display: block;
+            margin-top: 10px;
         }
 
         input, select {
             width: 100%;
             padding: 8px;
             margin-top: 5px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             background-color: #3a3a3a;
             color: #ffffff;
             border: 1px solid #555;
@@ -43,13 +45,14 @@
 
         button {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             background-color: #007acc;
             color: white;
             border: none;
             border-radius: 4px;
             font-weight: bold;
             cursor: pointer;
+            margin-top: 15px;
         }
 
         button:hover {
@@ -59,7 +62,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
+            margin-top: 20px;
         }
 
         th, td {
@@ -103,32 +106,32 @@
 
     <label>Current (A)</label>
     <input type="number" step="any" name="current"
-           value="{{ request.form.current or '' }}" required>
+        value="{{ form_data.current if form_data else '' }}" required>
 
     <label>Temp Rise (°C)</label>
     <input type="number" step="any" name="temp_rise"
-           value="{{ request.form.temp_rise or '' }}" required>
+        value="{{ form_data.temp_rise if form_data else '' }}" required>
 
     <label>Length (mm)</label>
     <input type="number" step="any" name="length_mm"
-           value="{{ request.form.length_mm or '' }}" required>
+        value="{{ form_data.length_mm if form_data else '' }}" required>
 
     <label>Supply Voltage (V)</label>
     <input type="number" step="any" name="supply_voltage"
-           value="{{ request.form.supply_voltage or '' }}" required>
+        value="{{ form_data.supply_voltage if form_data else '' }}" required>
 
     <label>Copper Weight</label>
     <select name="copper_weight">
-        <option value="0.5" {% if request.form.copper_weight == "0.5" %}selected{% endif %}>0.5 oz</option>
-        <option value="1" {% if request.form.copper_weight == "1" %}selected{% endif %}>1 oz</option>
-        <option value="2" {% if request.form.copper_weight == "2" %}selected{% endif %}>2 oz</option>
-        <option value="3" {% if request.form.copper_weight == "3" %}selected{% endif %}>3 oz</option>
+        <option value="0.5" {% if form_data and form_data.copper_weight == "0.5" %}selected{% endif %}>0.5 oz</option>
+        <option value="1" {% if form_data and form_data.copper_weight == "1" %}selected{% endif %}>1 oz</option>
+        <option value="2" {% if form_data and form_data.copper_weight == "2" %}selected{% endif %}>2 oz</option>
+        <option value="3" {% if form_data and form_data.copper_weight == "3" %}selected{% endif %}>3 oz</option>
     </select>
 
     <label>Layer Used for Resistance</label>
     <select name="resistance_layer">
-        <option value="external" {% if request.form.resistance_layer == "external" %}selected{% endif %}>External</option>
-        <option value="internal" {% if request.form.resistance_layer == "internal" %}selected{% endif %}>Internal</option>
+        <option value="external" {% if form_data and form_data.resistance_layer == "external" %}selected{% endif %}>External</option>
+        <option value="internal" {% if form_data and form_data.resistance_layer == "internal" %}selected{% endif %}>Internal</option>
     </select>
 
     <button type="submit">Calculate</button>
