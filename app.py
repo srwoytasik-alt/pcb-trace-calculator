@@ -8,9 +8,12 @@ from calculator import (
 
 app = Flask(__name__)
 
+
+# Health check endpoint for Render
 @app.route("/health")
 def health():
     return "OK", 200
+
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -18,6 +21,9 @@ def index():
 
     if request.method == "POST":
         try:
+            # -----------------------------
+            # Get form inputs safely
+            # -----------------------------
             current = float(request.form.get("current") or 0)
             temp_rise = float(request.form.get("temp_rise") or 0)
             length_mm = float(request.form.get("length_mm") or 0)
@@ -25,16 +31,12 @@ def index():
             copper_weight = float(request.form.get("copper_weight") or 1)
             resistance_layer = request.form.get("resistance_layer", "external")
 
-            if resistance_layer == "internal":
-                width_m = internal_width[0] * 0.0000254
-                layer_used_label = "Internal Layer"
-            else:
-                width_m = external_width[0] * 0.0000254
-                layer_used_label = "External Layer"
-
+            # Convert mm to meters
             length = length_mm / 1000
 
-            # Calculate widths FIRST
+            # -----------------------------
+            # Calculate trace widths FIRST
+            # -----------------------------
             external_width = calculate_trace_width(
                 current, temp_rise, copper_weight, "external"
             )
@@ -43,9 +45,9 @@ def index():
                 current, temp_rise, copper_weight, "internal"
             )
 
-            # Decide which layer is used for resistance
-            resistance_layer = request.form.get("resistance_layer", "external")
-
+            # -----------------------------
+            # Choose layer for resistance
+            # -----------------------------
             if resistance_layer == "internal":
                 width_m = internal_width[0] * 0.0000254
                 layer_used_label = "Internal Layer"
@@ -53,9 +55,11 @@ def index():
                 width_m = external_width[0] * 0.0000254
                 layer_used_label = "External Layer"
 
-            # Continue with resistance math
             thickness_m = COPPER_WEIGHTS[copper_weight]
 
+            # -----------------------------
+            # Resistance + voltage drop
+            # -----------------------------
             resistance = calculate_resistance(length, width_m, thickness_m)
             v_drop = calculate_voltage_drop(current, resistance)
 
@@ -64,6 +68,9 @@ def index():
             else:
                 v_drop_percent = 0
 
+            # -----------------------------
+            # Format results
+            # -----------------------------
             result = {
                 "external_mil": round(external_width[0], 2),
                 "external_mm": round(external_width[1], 3),
@@ -75,10 +82,6 @@ def index():
                 "layer_used": layer_used_label,
             }
 
-        # except Exception as e:
-        #     print("Error during calculation:", e)
-        #     result = None
-        
         except Exception as e:
             return f"Calculation Error: {e}"
 
@@ -87,5 +90,4 @@ def index():
 
 if __name__ == "__main__":
     app.run(debug=True)
-    
     
