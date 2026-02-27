@@ -75,9 +75,12 @@ def index():
                 "layer_used": layer_used_label,
             }
 
+        # except Exception as e:
+        #     print("Error during calculation:", e)
+        #     result = None
+        
         except Exception as e:
-            print("Error during calculation:", e)
-            result = None
+            return f"Calculation Error: {e}"
 
     return render_template("index.html", result=result)
 
